@@ -9,7 +9,7 @@ you rely on them.
 | Website, widget, `/team`, `/voice`, `/admin` | Vercel | Hobby (personal, non-commercial use only) | nothing (pages only) |
 | API (chat, calls, jobs) | Render, Frankfurt | Free: 512 MB, sleeps after 15 idle minutes, 750 hours a month | nothing (all state is in the database) |
 | Database | Neon, Frankfurt | 1 GB per project, 100 compute hours a month, sleeps after 5 idle minutes | everything |
-| Rate limits, verification codes | Upstash Redis, Frankfurt | 500,000 commands a month | short-lived keys only |
+| Rate limits, verification codes | Render Key Value, Frankfurt | Free: in memory, emptied on a restart | short-lived keys only |
 | Background tasks when the API sleeps | Upstash QStash | 1,000 messages a day | task ids only |
 
 Nothing here needs a payment card. Keep every key out of the repository: each one goes only into the
@@ -28,16 +28,17 @@ host's environment settings.
 3. You don't need to create any tables. The API creates them on its first start, including the `vector`
    and `btree_gist` extensions.
 
-## 3. Redis and QStash: Upstash (5 minutes)
-1. Sign up at upstash.com. **Redis > Create database**: name `consult-assistant`, region
-   **eu-central-1 (Frankfurt)**, free plan. Under **Connect**, copy the URL that starts with
-   `rediss://` (it includes the password).
-2. **QStash**: use the EU region (the default; the API uses `https://qstash.upstash.io`) and copy `QSTASH_TOKEN`, `QSTASH_CURRENT_SIGNING_KEY` and
+## 3. QStash: Upstash (3 minutes)
+Redis needs no account: Render creates it with the API in step 4 (Upstash's free plan allows one Redis
+database per account, and this one needs none there).
+
+1. Sign up at upstash.com and open **QStash**. Use the EU region (the default; the API uses `https://qstash.upstash.io`) and copy `QSTASH_TOKEN`, `QSTASH_CURRENT_SIGNING_KEY` and
    `QSTASH_NEXT_SIGNING_KEY`.
 
 ## 4. API: Render (10 minutes)
 1. Sign up at render.com with GitHub. **New > Blueprint**, then pick the repository. Render reads
-   `render.yaml` and creates the `consult-assistant-api` web service.
+   `render.yaml` and creates the `consult-assistant-api` web service and its Redis
+   (`consult-assistant-redis`), already connected.
 2. Render asks for the values marked `sync: false`:
 
    | Setting | Value |
@@ -45,7 +46,6 @@ host's environment settings.
    | `PUBLIC_API_URL` | `https://consult-assistant-api.onrender.com` (Render shows the address; if the name is taken, it adds letters) |
    | `ALLOWED_ORIGINS` | the Vercel address from step 5, e.g. `https://consult-assistant.vercel.app` (fill it in after step 5 if you don't know it yet) |
    | `DATABASE_URL` | Neon connection string |
-   | `REDIS_URL` | Upstash `rediss://...` URL |
    | `QSTASH_TOKEN`, `QSTASH_CURRENT_SIGNING_KEY`, `QSTASH_NEXT_SIGNING_KEY` | from Upstash |
    | `LLM_PROVIDER` | `groq` (while testing) or `anthropic` |
    | `GROQ_API_KEY` or `ANTHROPIC_API_KEY` | the key for that provider; leave the other empty |

@@ -1,4 +1,4 @@
-# Render Blueprint for the API (the website goes on Vercel; database on Neon, Redis and QStash on Upstash).
+# Render Blueprint: the API and its Redis (the website goes on Vercel, the database on Neon, QStash on Upstash).
 # Render > New > Blueprint > pick this repository. Values marked sync: false are asked for once, in Render.
 # See docs/DEPLOY.md.
 services:
@@ -25,7 +25,8 @@ services:
       # the website's address on Vercel (and the firm's site if the widget is embedded there), comma-separated
       - {key: ALLOWED_ORIGINS, sync: false}
       - {key: DATABASE_URL, sync: false}          # Neon
-      - {key: REDIS_URL, sync: false}             # Upstash Redis, rediss://...
+      - key: REDIS_URL                            # the Key Value instance below, on Render's private network
+        fromService: {type: keyvalue, name: consult-assistant-redis, property: connectionString}
       - {key: QSTASH_TOKEN, sync: false}
       - {key: QSTASH_CURRENT_SIGNING_KEY, sync: false}
       - {key: QSTASH_NEXT_SIGNING_KEY, sync: false}
@@ -34,3 +35,11 @@ services:
       - {key: ANTHROPIC_API_KEY, sync: false}     # leave empty if you use groq
 # Integrations (HubSpot, Google, Slack, Jira, Twilio) are not listed here: add them in Render under
 # Environment > "Add from .env", by pasting those lines from your local .env. Anything not set stays off.
+
+  # Rate limits, verification codes and locks: short-lived keys only, so the free plan's
+  # in-memory storage (emptied on a restart) is enough.
+  - type: keyvalue
+    name: consult-assistant-redis
+    plan: free
+    region: frankfurt
+    ipAllowList: []                # reachable only from Render services, not the internet
