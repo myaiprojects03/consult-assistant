@@ -87,3 +87,14 @@ def test_no_promise_to_follow_up_later():
     for s in ["Your consultant will contact you if anything is needed.", "You can ask me here any time.",
               "I can't let you know about other clients."]:
         assert check_sentence(s, []).reason is None, s
+
+
+def test_machine_start_values_never_reach_the_visitor():
+    """Seen live: the model copied the tool's start values into the slot list it offered."""
+    g = StreamGuard([])
+    out = g.feed("Here are a few options:\n* Friday 20 November at 14:00 Karachi time "
+                 "(start 2026‑11‑20T14:00:00+05:00)\n* Friday at 14:30 (start=2026-11-20T09:30:00Z)\n"
+                 "Which time works best? ") + g.flush()
+    assert "2026" not in out and "start" not in out
+    assert "* Friday 20 November at 14:00 Karachi time\n* Friday at 14:30\n" in out
+    assert not g.blocked

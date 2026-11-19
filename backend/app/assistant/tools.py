@@ -422,7 +422,8 @@ async def run_tool(ctx: ToolContext, name: str, args: dict[str, Any]) -> str:
             already = (f"Note: this visitor already has a call booked ({existing.reference}); use "
                        "reschedule_discovery_call to move it.\n") if existing else ""
             return (f"{already}Free times in the visitor's time zone ({tz.key}):\n" + "\n".join(lines)
-                    + "\nOffer two or three of these in plain words. When they choose, pass that start value exactly.")
+                    + "\nOffer two or three of these in plain words (the label only; never show a start value). "
+                    "When they choose, pass that start value exactly.")
 
         if name == "book_discovery_call":
             person = await ctx.repo.get_lead(ctx.conversation_id)

@@ -32,6 +32,17 @@ PROMISE_RE = re.compile(
 NEGATION_RE = re.compile(r"\b(?:can't|cannot|can not|not|no|don't|won't|never|unable to)\b[^.!?]{0,25}$",
                          re.IGNORECASE)
 BOUNDARY_RE = re.compile(r"(?<=[.!?])\s+|\n")
+# Tool results carry machine start values (2026-11-20T14:00:00+05:00) for the model to pass back. A visitor
+# must never see one, so they are removed, with a wrapper like "(start ...)" or "start=..." around them.
+_DASH = "-\u2010\u2011\u2012\u2013"
+MACHINE_TIME_RE = re.compile(
+    rf"\s*(?:\(\s*)?(?:start\s*[=:]?\s*)?\d{{4}}[{_DASH}]\d{{2}}[{_DASH}]\d{{2}}T\d{{2}}:\d{{2}}(?::\d{{2}}(?:\.\d+)?)?"
+    rf"(?:Z|[+{_DASH}\u2212]\d{{2}}:?\d{{2}})?(?:\s*\))?",
+    re.IGNORECASE)
+
+
+def scrub(sentence: str) -> str:
+    return MACHINE_TIME_RE.sub("", sentence)
 
 
 def _norm(s: str) -> str:
@@ -68,6 +79,7 @@ class StreamGuard:
     _said: set[str] = field(default_factory=set)
 
     def _release(self, sentence: str, sep: str) -> str:
+        sentence = scrub(sentence)
         if not sentence.strip():
             return sentence + sep
         v = check_sentence(sentence, self.allowed_prices)
