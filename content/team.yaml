@@ -1,0 +1,30 @@
+# Consultants: whose calendar a discovery call goes into, and who is told about leads and handovers.
+#
+# calendar_id  "primary" = the main calendar of the Google account the assistant signs in with.
+#              To route to a colleague, share their calendar with that account ("Make changes to
+#              events") and put its id here (Google Calendar > Settings > the calendar > Calendar ID).
+# areas        words matched against what the visitor needs; the best match gets the call.
+# handovers    handover reasons this person receives (security_incident, pricing_negotiation,
+#              legal_or_complaint, enterprise_account, human_requested, cannot_help, other).
+# slack_user_id  optional: Slack member id (profile > ... > Copy member ID) to @mention them.
+# phone        optional: their phone in international format (+44...), for live call transfers.
+#              Without it, callers who ask for this person are offered a call back instead.
+# Exactly one person should have default: true (anything unmatched goes to them).
+
+consultants:
+  - id: sam
+    name: Sam Patel
+    calendar_id: primary
+    slack_user_id: ""
+    phone: ""
+    areas: [cloud, azure, aws, migration, microsoft 365, m365, managed, help desk, strategy, data, automation]
+    handovers: [security_incident, pricing_negotiation, legal_or_complaint, enterprise_account,
+                human_requested, cannot_help, other]
+    default: true
+
+  # Example of a second consultant with their own (shared) calendar:
+  # - id: priya
+  #   name: Priya Shah
+  #   calendar_id: priya@acme-consulting.example
+  #   areas: [security, iso 27001, cyber essentials, penetration, compliance]
+  #   handovers: [security_incident]

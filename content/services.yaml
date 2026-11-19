@@ -1,0 +1,40 @@
+# SAMPLE CONTENT. One entry per service the assistant may describe.
+- slug: cloud-migration
+  title: Cloud migration and management
+  body: |
+    We plan and run migrations to Microsoft Azure and AWS: assessment of your current servers and
+    applications, a migration plan with a cut-over date, the move itself, and cost optimisation afterwards.
+    We can also manage the cloud environment for you after the migration.
+
+- slug: managed-it
+  title: Managed IT and support
+  body: |
+    A monthly managed service for your devices, users and infrastructure: help desk, monitoring, patching,
+    backups and onboarding of new staff. Support hours and response times are agreed in the service
+    agreement.
+
+- slug: cybersecurity
+  title: Cybersecurity assessment and hardening
+  body: |
+    A security assessment of your environment (identity, devices, email, network and backups) with a
+    prioritised report, followed by hardening work such as multi-factor authentication, device management
+    and security awareness training. We also help prepare for certifications such as ISO 27001 and Cyber
+    Essentials.
+
+- slug: microsoft-365
+  title: Microsoft 365 and modern workplace
+  body: |
+    Setup, migration and governance of Microsoft 365: Exchange Online, Teams, SharePoint and OneDrive,
+    Intune device management and licensing reviews.
+
+- slug: data-automation
+  title: Data, AI and automation
+  body: |
+    Reporting and dashboards, data platforms, workflow automation (Power Automate and similar tools) and
+    practical AI assistants built on your own documents and systems.
+
+- slug: it-strategy
+  title: IT strategy and virtual CIO
+  body: |
+    IT roadmaps, budgeting, vendor selection and a part-time virtual CIO who joins your leadership meetings
+    and owns the IT plan.

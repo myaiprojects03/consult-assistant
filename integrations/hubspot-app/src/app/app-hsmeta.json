@@ -1,0 +1,28 @@
+{
+  "uid": "consult_assistant_app",
+  "type": "app",
+  "config": {
+    "name": "Consult Assistant",
+    "description": "Website assistant: saves leads as contacts, booked discovery calls as deals, and a conversation note.",
+    "distribution": "private",
+    "auth": {
+      "type": "static",
+      "requiredScopes": [
+        "oauth",
+        "crm.objects.contacts.read",
+        "crm.objects.contacts.write",
+        "crm.objects.deals.read",
+        "crm.objects.deals.write"
+      ],
+      "optionalScopes": [],
+      "conditionallyRequiredScopes": []
+    },
+    "permittedUrls": {
+      "fetch": [
+        "https://api.hubapi.com"
+      ],
+      "iframe": [],
+      "img": []
+    }
+  }
+}

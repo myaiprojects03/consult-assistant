@@ -1,0 +1,37 @@
+# SAMPLE CONTENT. Questions visitors ask often, with the approved answer.
+- slug: faq-pricing
+  title: How much do your services cost?
+  body: |
+    Pricing depends on scope, so we do not quote prices in chat. After a free discovery call, you receive a
+    written proposal with a fixed price or a clear estimate. Managed services are billed monthly; projects
+    are priced per project.
+
+- slug: faq-company-size
+  title: What size of companies do you work with?
+  body: |
+    We work with companies of about 10 employees and up, from growing SMEs to enterprise organisations.
+
+- slug: faq-locations
+  title: Where do you work?
+  body: |
+    Our team is based in the UK and works with clients across Europe and North America. Most work is done
+    remotely; on-site visits are arranged when a project needs them.
+
+- slug: faq-24-7
+  title: Do you offer 24/7 support?
+  body: |
+    Out-of-hours support is available as part of a managed service agreement. Standard support runs during
+    office hours, Monday to Friday, 9:00 to 18:00 UK time.
+
+- slug: faq-start-time
+  title: How quickly can you start?
+  body: |
+    It depends on the project and our current schedule. A consultant confirms a realistic start date during
+    the discovery call.
+
+- slug: faq-existing-client-support
+  title: Can existing clients get support in the chat?
+  body: |
+    Yes. After a quick check of the email address you use with us, you can ask about ticket status and
+    project updates, raise a support ticket or book a call here. Urgent or technical issues go straight to
+    your consultant.

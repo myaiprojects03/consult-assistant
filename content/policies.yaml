@@ -1,0 +1,12 @@
+# SAMPLE CONTENT. Policies the assistant may explain.
+- slug: privacy
+  title: How we handle your information in this chat
+  body: |
+    We use the details you share in this chat only to answer you and arrange a call. Conversations are
+    stored securely and you can ask us to delete them at any time by emailing privacy@example.com.
+
+- slug: guarantees
+  title: Guarantees and commitments
+  body: |
+    Service levels, timelines and commitments are set in a signed proposal or service agreement, not in
+    this chat.

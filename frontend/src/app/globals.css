@@ -1,0 +1,50 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html, body {
+  height: 100%;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.chat-text p + p, .chat-text p + ul, .chat-text ul + p, .chat-text p + ol { margin-top: 0.5rem; }
+.chat-text ul { list-style: disc; padding-left: 1.2rem; }
+.chat-text ol { list-style: decimal; padding-left: 1.2rem; }
+.chat-text a { text-decoration: underline; }
+
+.typing { display: inline-flex; gap: 3px; vertical-align: middle; }
+.typing i { width: 5px; height: 5px; border-radius: 50%; background: currentColor; animation: blink 1.2s infinite; }
+.typing i:nth-child(2) { animation-delay: 0.2s; }
+.typing i:nth-child(3) { animation-delay: 0.4s; }
+@keyframes blink { 0%, 80%, 100% { opacity: 0.25; } 40% { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .typing i { animation: none; opacity: 0.6; } }
+
+/* Team assistant answers: longer, structured drafts */
+.team-text h1, .team-text h2, .team-text h3 { font-weight: 600; margin-top: 0.9rem; margin-bottom: 0.3rem; }
+.team-text h1 { font-size: 1.15rem; } .team-text h2 { font-size: 1.05rem; } .team-text h3 { font-size: 1rem; }
+.team-text li + li { margin-top: 0.2rem; }
+.team-text blockquote { border-left: 3px solid #D7E2DF; padding-left: 0.75rem; color: #5B6B6A; }
+.team-text code { font-size: 0.9em; background: #EEF4F2; padding: 0 0.25rem; border-radius: 4px; }
+.team-text pre { background: #EEF4F2; padding: 0.6rem; border-radius: 8px; overflow-x: auto; }
+.team-text table { border-collapse: collapse; margin-top: 0.5rem; display: block; overflow-x: auto; }
+.team-text th, .team-text td { border: 1px solid #D7E2DF; padding: 0.3rem 0.5rem; text-align: left; }
+.team-text a.cite { text-decoration: none; font-size: 0.8em; font-weight: 600; color: #1F7A6B; vertical-align: 0.1em; margin-left: 0.15em; }
+.team-text a.cite:hover { text-decoration: underline; }
+.team-text ol + p, .team-text ul + p, .team-text p + blockquote, .team-text blockquote + p,
+.team-text p + h2, .team-text p + h3, .team-text ul + h2, .team-text ol + h2 { margin-top: 0.6rem; }
+
+/* Voice call button: one ring that shows who is talking. */
+.call-button::after {
+  content: ""; position: absolute; inset: -10px; border-radius: 9999px;
+  border: 3px solid var(--ring); opacity: 0; pointer-events: none;
+}
+.call-button.is-listening::after { opacity: 0.55; animation: ring-listen 2.4s ease-in-out infinite; }
+.call-button.is-speaking::after { opacity: 0.8; animation: ring-speak 0.9s ease-in-out infinite; }
+.call-button.is-thinking::after { opacity: 0.4; border-style: dashed; animation: ring-turn 3s linear infinite; }
+@keyframes ring-listen { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.06); } }
+@keyframes ring-speak { 0%, 100% { transform: scale(1.02); } 50% { transform: scale(1.14); } }
+@keyframes ring-turn { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) {
+  .call-button::after { animation: none !important; }
+}

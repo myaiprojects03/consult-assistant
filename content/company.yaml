@@ -1,0 +1,22 @@
+# SAMPLE CONTENT for the demo firm "Acme IT Consulting". Replace with the real firm's details.
+- slug: about
+  title: About Acme IT Consulting
+  body: |
+    Acme IT Consulting is an IT consulting firm of about 50 people. We work with SMEs and enterprise
+    organisations on cloud, cybersecurity, Microsoft 365, managed IT, data and automation, and IT strategy.
+
+    We work remotely and on site. Our consultants hold vendor certifications in Microsoft Azure, AWS and
+    Microsoft 365.
+
+- slug: how-we-work
+  title: How an engagement starts
+  body: |
+    Every engagement starts with a free 30-minute discovery call with a consultant. We learn about your
+    goals, current systems and constraints, then send a written proposal with scope, timeline and cost.
+    Nothing is charged before you accept a proposal.
+
+- slug: contact
+  title: Contact and office hours
+  body: |
+    Office hours are Monday to Friday, 9:00 to 18:00 UK time. You can book a discovery call through this
+    chat, or email hello@example.com. Existing clients with an urgent issue should call their support line.

@@ -1,0 +1,36 @@
+# Render Blueprint for the API (the website goes on Vercel; database on Neon, Redis and QStash on Upstash).
+# Render > New > Blueprint > pick this repository. Values marked sync: false are asked for once, in Render.
+# See docs/DEPLOY.md.
+services:
+  - type: web
+    name: consult-assistant-api
+    runtime: docker
+    plan: free                     # starter ($7/month) for go-live: always on, no cold starts
+    region: frankfurt              # EU, next to Neon and Upstash in Frankfurt
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./
+    healthCheckPath: /health
+    autoDeployTrigger: checksPass  # deploy a push only after the GitHub checks pass
+    buildFilter:
+      paths: [backend/**, content/**, render.yaml]
+      ignoredPaths: [backend/tests/**, backend/evals/**]
+    envVars:
+      - {key: APP_ENV, value: production}
+      - {key: JOB_RUNNER, value: qstash}          # free plan sleeps: QStash wakes it when a task is due
+      - {key: EMBEDDING_PROVIDER, value: local}
+      - {key: EMBEDDING_THREADS, value: "1"}
+      - {key: CLIENT_IP_HEADER, value: cf-connecting-ip}
+      # the API's own address, e.g. https://consult-assistant-api.onrender.com (QStash and Twilio call it)
+      - {key: PUBLIC_API_URL, sync: false}
+      # the website's address on Vercel (and the firm's site if the widget is embedded there), comma-separated
+      - {key: ALLOWED_ORIGINS, sync: false}
+      - {key: DATABASE_URL, sync: false}          # Neon
+      - {key: REDIS_URL, sync: false}             # Upstash Redis, rediss://...
+      - {key: QSTASH_TOKEN, sync: false}
+      - {key: QSTASH_CURRENT_SIGNING_KEY, sync: false}
+      - {key: QSTASH_NEXT_SIGNING_KEY, sync: false}
+      - {key: LLM_PROVIDER, sync: false}          # groq while testing, anthropic at go-live
+      - {key: GROQ_API_KEY, sync: false}          # leave empty if you use anthropic
+      - {key: ANTHROPIC_API_KEY, sync: false}     # leave empty if you use groq
+# Integrations (HubSpot, Google, Slack, Jira, Twilio) are not listed here: add them in Render under
+# Environment > "Add from .env", by pasting those lines from your local .env. Anything not set stays off.

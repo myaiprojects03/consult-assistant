@@ -1,0 +1,36 @@
+# secrets
+.env
+.env.*
+!.env.example
+
+# python
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# downloaded models
+.cache/
+
+# reports
+backend/evals/report.md
+
+# editors and OS
+.vscode/
+.idea/
+.DS_Store
+*.log
+
+# browser test output
+frontend/test-results/
+frontend/playwright-report/
+
+# secrets  (add under !.env.example)
+hubspot.config.yml
+.vercel/
+
+# reports  (add under backend/evals/report.md)
+coverage/
+.coverage

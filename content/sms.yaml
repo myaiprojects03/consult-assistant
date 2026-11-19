@@ -1,0 +1,7 @@
+# Text messages about discovery calls, sent to the caller's phone (Phase 4). Keep them short: one SMS is
+# 160 characters. Same {placeholders} as content/emails.yaml. A template that is missing or empty is not sent.
+
+confirmation: "{firm}: your discovery call with {consultant} is booked for {when}. Ref {reference}. The invitation is in your email."
+rescheduled: "{firm}: your discovery call has moved to {when}. Ref {reference}."
+cancelled: "{firm}: your discovery call {reference} is cancelled. Call us any time to book a new one."
+reminder_24h: "{firm}: reminder, your discovery call with {consultant} is tomorrow, {when}. Ref {reference}."

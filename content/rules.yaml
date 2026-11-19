@@ -1,0 +1,85 @@
+# How the assistant behaves. Staff change these without touching code (from Phase 5 in the admin
+# dashboard; until then, edit this file and restart the backend).
+
+firm_name: Acme IT Consulting
+assistant_name: Ava
+tone: >
+  Professional, warm and concise. Plain English, no jargon unless the visitor uses it.
+  Short answers (2 to 4 sentences) and one question at a time.
+greeting: >
+  Hi, I'm Ava from Acme IT Consulting. I can explain our services, answer questions or set up a
+  free discovery call with a consultant. What brings you here today?
+
+office_hours: Monday to Friday, 9:00 to 18:00 (UK time)
+booking_note: >
+  Discovery calls are free, 30 minutes, by video. The visitor gets a confirmation email, a calendar
+  invitation and reminders.
+
+# When discovery calls can be booked (office time zone; daylight saving is handled).
+booking:
+  timezone: Europe/London
+  days: [mon, tue, wed, thu, fri]
+  start: "09:00"
+  end: "17:30"              # the last call must end by this time
+  slot_minutes: 30
+  buffer_minutes: 15        # kept free before and after other meetings
+  min_notice_hours: 12
+  days_ahead: 14
+  max_offered: 6            # times offered at once
+  reminders:                # email name (content/emails.yaml) -> minutes before the call
+    reminder_24h: 1440
+    reminder_1h: 60
+
+# How long personal data is kept (GDPR). Anything older is deleted every night. 0 = keep for ever.
+privacy:
+  conversations_days: 365     # chats and calls: transcripts, lead details, call requests
+  bookings_days: 730          # discovery calls, counted from the day of the call
+  logs_days: 365              # audit log entries (records of privacy requests are kept)
+  finished_jobs_days: 90      # completed background tasks (they hold names and emails)
+
+# Phone and browser voice calls (Phase 4).
+voice:
+  greeting: >
+    Hello, you've reached Acme IT Consulting. I'm Ava, the firm's virtual assistant, and this call is
+    transcribed. How can I help you today?
+  # Said when we call someone (outbound). {name} and {purpose} come from the call request.
+  outbound_greeting: >
+    Hello {name}, this is Ava, the virtual assistant of Acme IT Consulting, calling about {purpose}.
+    Is now a good time to talk?
+  language: en-GB
+  max_call_minutes: 15
+  # Live transfers to a consultant only happen in these hours (office time zone); outside them the
+  # caller is offered a call back.
+  transfer_hours: {days: [mon, tue, wed, thu, fri], start: "09:00", end: "18:00"}
+  # Outbound calls are only placed in these hours, in the time zone of the person called when it is
+  # known (else the office's). A request outside them waits for the next allowed time.
+  calling_hours: {days: [mon, tue, wed, thu, fri], start: "10:00", end: "17:00"}
+
+# What the assistant collects before offering a discovery call. Order = the order it asks.
+qualification_fields: [need, company_size, current_systems, budget, timeline, name, email]
+
+# Who the firm is a good fit for (used to mark a lead "qualified" or "not_a_fit").
+fit:
+  min_employees: 10
+  note: We work with companies of about 10 employees and up, from SMEs to enterprises.
+
+# Prices the assistant MAY quote word for word. Empty = it never states a price; any amount in a
+# reply that is not listed here is removed before the visitor sees it.
+allowed_price_figures: []
+
+# Handed to a consultant in code, whatever the model decides. reason -> phrases that trigger it.
+escalate_topics:
+  security_incident: [breach, hacked, ransomware, malware, phishing attack, data leak, compromised,
+                      security incident, cyber attack, cyberattack]
+  pricing_negotiation: [discount, negotiate, best price, match the price, cheaper quote, price match]
+  legal_or_complaint: [lawyer, legal action, sue, complaint, refund, cancel our contract, terminate the contract]
+  human_requested: [talk to a human, speak to a person, real person, speak to someone, talk to someone,
+                    human agent, call me back]
+
+# Situations the model must recognise and hand over itself (wording varies too much for phrases).
+escalate_guidance:
+  - The visitor is negotiating price, terms or a contract.
+  - The visitor describes an active security incident or an outage affecting their business.
+  - The visitor is upset, makes a complaint, or raises a legal or compliance matter.
+  - The visitor is from a large enterprise account and asks for anything beyond general information.
+  - The visitor asks for a person, or you cannot help after two attempts.

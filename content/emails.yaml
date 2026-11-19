@@ -1,0 +1,74 @@
+# Emails the assistant sends about discovery calls. Edit the wording freely; keep the {placeholders}.
+# Available: {first_name} {name} {firm} {consultant} {reference} {when} (visitor's time zone)
+#            {when_office} (office time zone) {minutes} {video} (the Google Meet link line)
+# Changes apply after a backend restart (from Phase 5, in the admin dashboard).
+
+confirmation:
+  subject: "Your discovery call with {firm}: {when}"
+  body: |
+    Hi {first_name},
+
+    Thanks for booking a free discovery call with {firm}. Here are the details:
+
+    When: {when}
+    With: {consultant}
+    Length: {minutes} minutes, by video
+    {video}
+    Reference: {reference}
+
+    You'll also get a calendar invitation. If you need to change or cancel, reply to this email or
+    tell our website assistant your reference and email address.
+
+    {firm}
+
+rescheduled:
+  subject: "Your discovery call has moved: {when}"
+  body: |
+    Hi {first_name},
+
+    Your discovery call with {firm} is now:
+
+    When: {when}
+    With: {consultant}
+    {video}
+    Reference: {reference}
+
+    The calendar invitation has been updated.
+
+    {firm}
+
+cancelled:
+  subject: "Your discovery call with {firm} is cancelled"
+  body: |
+    Hi {first_name},
+
+    Your discovery call ({reference}, {when}) has been cancelled. If that's a mistake or you'd like a
+    new time, reply to this email or book again through our website.
+
+    {firm}
+
+reminder_24h:
+  subject: "Reminder: your discovery call is tomorrow, {when}"
+  body: |
+    Hi {first_name},
+
+    A reminder that your free discovery call with {consultant} from {firm} is tomorrow:
+
+    When: {when}
+    {video}
+    Reference: {reference}
+
+    Need to move it? Reply to this email or tell our website assistant your reference.
+
+    {firm}
+
+reminder_1h:
+  subject: "Starting in 1 hour: your discovery call with {firm}"
+  body: |
+    Hi {first_name},
+
+    Your discovery call with {consultant} starts in about an hour ({when}).
+
+    {video}
+
+    {firm}
