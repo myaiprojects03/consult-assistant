@@ -169,3 +169,25 @@ def test_instructions_carry_the_fit_rule_and_flag_small_companies():
     small.status = "not_a_fit"
     assert "below the size" in turn_context(small, rules, None, None)
     assert "below the size" not in turn_context(Lead("c2", company_size="40"), rules, None, None)
+
+
+def test_read_only_model_folder_is_copied_to_temp(tmp_path, monkeypatch):
+    """A serverless bundle is read-only, and the model library writes lock files next to the model."""
+    import os
+    import tempfile
+
+    from app.kb.embeddings import writable_cache
+    model = tmp_path / "bundle" / "fastembed"
+    (model / "m").mkdir(parents=True)
+    (model / "m" / "model.onnx").write_text("weights")
+    assert writable_cache(model) == model                      # writable: used in place
+
+    monkeypatch.setattr(tempfile, "gettempdir", lambda: str(tmp_path / "tmp"))
+    (tmp_path / "tmp").mkdir()
+    real_access = os.access
+    monkeypatch.setattr(os, "access", lambda p, mode: False if str(p) == str(model) else real_access(p, mode))
+    copy = writable_cache(model)
+    assert copy == tmp_path / "tmp" / "fastembed"
+    assert (copy / "m" / "model.onnx").read_text() == "weights"
+    assert writable_cache(model) == copy                       # copied once
+    assert writable_cache(tmp_path / "missing") == tmp_path / "missing"

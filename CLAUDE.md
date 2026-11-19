@@ -29,7 +29,7 @@ internal knowledge assistant (3), voice agent (4), admin dashboard and go-live (
   - `app/content/` dashboard edits: `store.py` (versions), `live.py` (content/ + edits, checked before
     saving), `forms.py` (list files edited as a form).
   - `app/privacy/store.py` GDPR: find, export, erase one person; nightly retention (`privacy.retention` job).
-  - `scripts/` `google_auth` (one-time Google sign-in), `check_integrations`, `qstash_setup`, `staff`
+  - `scripts/` `google_auth` (one-time Google sign-in), `check_integrations`, `qstash_setup`, `vercel_build`, `staff`
     (accounts and access), `seed_demo` (sample clients).
 - `content/internal/` internal documents (Markdown with a title/kind/client header) for the team assistant.
 - `content/` the firm's editable content and the assistant's rules (`rules.yaml`, including booking hours

@@ -38,7 +38,7 @@ assistant is "Ava".
 | Backend | Python 3.12, FastAPI, asyncpg, Postgres 16 with pgvector, Redis |
 | AI | Claude (`claude-haiku-5-5` for chat and voice, `claude-sonnet-5-5` for drafts), or any OpenAI-compatible API |
 | Frontend | Next.js 15, React 19, Tailwind |
-| Hosting | Vercel, Render, Neon, Upstash (free plans for a pilot) |
+| Hosting | Vercel (website and API), Neon, Redis Cloud, Upstash QStash (free plans for a pilot) |
 
 ## Quick start
 

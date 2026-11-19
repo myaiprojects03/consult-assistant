@@ -2,6 +2,8 @@
 .env
 .env.*
 !.env.example
+hubspot.config.yml
+.vercel/
 
 # python
 __pycache__/
@@ -16,6 +18,8 @@ __pycache__/
 
 # reports
 backend/evals/report.md
+coverage/
+.coverage
 
 # editors and OS
 .vscode/
@@ -27,10 +31,5 @@ backend/evals/report.md
 frontend/test-results/
 frontend/playwright-report/
 
-# secrets  (add under !.env.example)
-hubspot.config.yml
-.vercel/
-
-# reports  (add under backend/evals/report.md)
-coverage/
-.coverage
+# Vercel build output (scripts/vercel_build.py)
+backend/vercel_bundle/

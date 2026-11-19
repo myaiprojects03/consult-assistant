@@ -5,7 +5,10 @@ from pathlib import Path
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
-CONTENT_DIR = PROJECT_ROOT / "content"
+# Serverless hosts (Vercel) deploy only backend/: scripts/vercel_build.py copies content/ and the embedding
+# model into this folder at build time.
+BUNDLE_DIR = Path(__file__).resolve().parents[1] / "vercel_bundle"
+CONTENT_DIR = PROJECT_ROOT / "content" if (PROJECT_ROOT / "content").is_dir() else BUNDLE_DIR / "content"
 
 
 class Settings(BaseSettings):

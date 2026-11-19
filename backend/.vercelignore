@@ -1,0 +1,8 @@
+# Not needed by the running API (Vercel deploys backend/ only)
+tests/
+evals/
+.venv/
+.cache/
+Dockerfile
+requirements-dev.txt
+pytest.ini

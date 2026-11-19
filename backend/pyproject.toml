@@ -21,3 +21,7 @@ extend-immutable-calls = ["fastapi.Depends", "fastapi.Header"]
 python_version = "3.12"
 ignore_missing_imports = true
 warn_unused_ignores = true
+
+# Vercel (docs/DEPLOY.md): the API is a FastAPI app in app/main.py; this runs after dependencies install.
+[tool.vercel.scripts]
+build = "python -m scripts.vercel_build"
