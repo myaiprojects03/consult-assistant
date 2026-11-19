@@ -63,6 +63,20 @@ test("a person's data is found, downloaded and erased", async ({ page }) => {
   await expect(page.getByText("Erased one person's data", { exact: false }).first()).toBeVisible();   // logged
 });
 
+test("the dashboard transcript shows the reply as formatted, as in the chat", async ({ page }) => {
+  await openChat(page);
+  const chat = await ask(page, "formatting check: what do you offer?");
+  await expect(chat.getByText("Cloud migration", { exact: true })).toBeVisible();
+
+  await signInAdmin(page);
+  await section(page, "Conversations");
+  await page.getByRole("button", { name: /formatting check/ }).first().click();
+  const transcript = page.getByRole("region", { name: "Transcript" });
+  await expect(transcript.locator("strong", { hasText: "Cloud migration" })).toBeVisible();
+  await expect(transcript.locator("li")).toHaveCount(2);
+  await expect(transcript.getByText("**")).toHaveCount(0);
+});
+
 test("every dashboard section opens without errors", async ({ page }) => {
   const errors: string[] = [];
   page.on("pageerror", (e) => errors.push(e.message));

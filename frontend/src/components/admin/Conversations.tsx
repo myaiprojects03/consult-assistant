@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import ReactMarkdown from "react-markdown";
 
 import { brand } from "@/config/brand";
 import { adminGet, details, Row, when, words } from "@/lib/admin";
@@ -78,7 +79,10 @@ export function ConversationDetail({ token, id, onClose, onError }: {
              style={{ background: c.accent, color: c.accentInk }}>{m.text}</p>
         ) : (
           <div key={i} className="max-w-[85%]">
-            {m.text && <p className="whitespace-pre-wrap rounded-2xl px-3 py-2 text-sm" style={{ background: c.soft }}>{m.text}</p>}
+            {m.text && <div className="chat-text rounded-2xl px-3 py-2 text-sm" style={{ background: c.soft }}>
+              {/* Ava's replies are Markdown, as in the chat; links are not made clickable here */}
+              <ReactMarkdown allowedElements={["p", "ul", "ol", "li", "strong", "em", "br"]} unwrapDisallowed>{m.text}</ReactMarkdown>
+            </div>}
             {m.tools.length > 0 && <p className="mt-1 text-xs" style={{ color: c.muted }}>
               Ava {m.tools.map((t) => TOOL_WORDS[t] ?? words(t)).join(", ")}</p>}
           </div>

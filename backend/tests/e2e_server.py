@@ -48,6 +48,12 @@ class CannedLLM(LLMProvider):
             yield ToolCallEvent(ToolCall("e2e-search", "search_knowledge", {"query": last.text}))
             yield Done("tool_use", 10, 5)
             return
+        asked = next((m.text for m in reversed(messages) if m.role == "user"), "")
+        if last is not None and last.role == "tool" and "formatting check" in asked:
+            text = "Here is what we offer:\n\n- **Cloud migration** to Azure or AWS\n- **Managed IT** support"
+            yield TextDelta(text)
+            yield Done("end", 10, 5)
+            return
         if last is not None and last.role == "tool":
             text = "I don't have that information, but a consultant can help on a free discovery call."
             if last.text.startswith("["):                   # "[title]\nchunk": answer with the chunk
