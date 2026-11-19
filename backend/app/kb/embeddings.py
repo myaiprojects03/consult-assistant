@@ -75,10 +75,14 @@ def writable_cache(folder: Path) -> Path:
 
 
 def default_cache() -> str:
-    """The model built into a serverless bundle, else a folder in the project, not the system temp folder
-    (which macOS empties on restart, forcing a 67 MB download again)."""
+    """The model built into a serverless bundle, else a folder in the project rather than the system temp
+    folder (which macOS empties on restart, forcing a 67 MB download again)."""
     bundled = BUNDLE_DIR / "fastembed"
-    return str(bundled if bundled.is_dir() else PROJECT_ROOT / ".cache" / "fastembed")
+    if bundled.is_dir():
+        return str(bundled)
+    if os.access(PROJECT_ROOT, os.W_OK):
+        return str(PROJECT_ROOT / ".cache" / "fastembed")
+    return str(Path(tempfile.gettempdir()) / "fastembed")     # read-only deployment without the bundled model
 
 
 def build_embedder(settings: Settings) -> Embedder:

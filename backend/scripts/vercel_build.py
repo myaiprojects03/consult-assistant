@@ -1,5 +1,7 @@
-"""Vercel build step (see backend/pyproject.toml). Vercel deploys only backend/, so this copies content/
-and the embedding model into backend/vercel_bundle/, where app/config.py looks when ../content is absent.
+"""Vercel build step (backend/vercel.json; it runs after requirements.txt is installed). Vercel deploys only
+backend/, so this copies content/ and the embedding model into backend/vercel_bundle/, where app/config.py
+looks when ../content is absent. Keep backend/ free of a pyproject.toml: Vercel would install from it instead
+of requirements.txt.
 
     python -m scripts.vercel_build
 """
@@ -22,8 +24,13 @@ def main() -> int:
     shutil.copytree(source, BUNDLE / "content")
     print(f"copied {sum(1 for p in (BUNDLE / 'content').rglob('*') if p.is_file())} content files")
 
-    from fastembed import TextEmbedding
-    TextEmbedding(MODEL, cache_dir=str(BUNDLE / "fastembed"))
+    try:
+        from fastembed import TextEmbedding
+        TextEmbedding(MODEL, cache_dir=str(BUNDLE / "fastembed"))
+    except Exception as exc:  # the API then downloads it into the temp folder on first use
+        shutil.rmtree(BUNDLE / "fastembed", ignore_errors=True)
+        print(f"WARNING: embedding model not bundled ({exc}); it will download on the first cold start")
+        return 0
     size = sum(p.stat().st_size for p in (BUNDLE / "fastembed").rglob("*") if p.is_file())
     print(f"embedding model {MODEL}: {size / 1e6:.0f} MB")
     return 0

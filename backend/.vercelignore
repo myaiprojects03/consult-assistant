@@ -6,3 +6,5 @@ evals/
 Dockerfile
 requirements-dev.txt
 pytest.ini
+ruff.toml
+mypy.ini

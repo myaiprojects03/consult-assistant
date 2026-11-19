@@ -1,27 +1,17 @@
-[tool.ruff]
 line-length = 120
 target-version = "py312"
 
-[tool.ruff.lint]
+[lint]
 select = ["E", "F", "W", "I", "B", "UP", "ASYNC", "S"]
 ignore = ["S101", "S105", "S106", "S311"]
 
-[tool.ruff.lint.flake8-bugbear]
+[lint.flake8-bugbear]
 # FastAPI dependencies are declared as argument defaults by design.
 extend-immutable-calls = ["fastapi.Depends", "fastapi.Header"]
 
-[tool.ruff.lint.per-file-ignores]
+[lint.per-file-ignores]
 "tests/*" = ["S"]
 "evals/*" = ["S"]
 # Dashboard and privacy SQL is assembled only from constants in the file; every value is a $n parameter.
 "app/admin/queries.py" = ["S608"]
 "app/privacy/store.py" = ["S608"]
-
-[tool.mypy]
-python_version = "3.12"
-ignore_missing_imports = true
-warn_unused_ignores = true
-
-# Vercel (docs/DEPLOY.md): the API is a FastAPI app in app/main.py; this runs after dependencies install.
-[tool.vercel.scripts]
-build = "python -m scripts.vercel_build"
