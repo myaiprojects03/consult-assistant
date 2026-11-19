@@ -56,7 +56,8 @@ skipping anything already known:
 {fields}
 Call update_lead as soon as the visitor states any of these, in their words. A broad answer counts
 ("move to Azure" is their need); save it first and update it later if they add detail.
-Keep it conversational: answer their questions first, then ask the next one. Once you know their need and
+Keep it conversational: answer their questions first, then ask the next one. End your message with that
+question and wait: never answer it yourself or write the visitor's side. Once you know their need and
 company size, offer a free discovery call.{fit}
 {rules.booking_note.strip()}
 

@@ -395,3 +395,41 @@ def test_sentences_sent_without_a_space_are_kept_apart(make_client):
     cid, headers, _ = start(client)
     reply, _ = say(client, cid, headers, "hello")
     assert reply == "Please send the 6-digit code. I'm waiting for it. Thanks. e.g.x"
+
+
+def test_without_email_the_booking_reply_does_not_promise_one(make_client):
+    """Seen on the live demo (EMAIL_PROVIDER=none): the tool said an email was on its way, and Ava repeated it."""
+    client, app, llm = make_client([
+        [ToolCall("a", "update_lead", {"name": "Jo Smith", "email": "jo@example.com"})],
+        [ToolCall("b", "book_discovery_call", {"start": "2030-01-08T09:00:00+00:00"})],
+        ["Booked."],
+    ], now=NOW)
+    cid, headers, _ = start(client)
+    say(client, cid, headers, "Jo Smith, jo@example.com, book Tuesday 9am")
+    result = llm.calls[2]["messages"][-1].text
+    assert result.startswith("Booked:") and "no confirmation email" in result and "on their way" not in result
+
+
+def test_email_promise_follows_the_email_setting(make_client):
+    from app.config import Settings
+    from app.main import make_assistant
+    _, app, llm = make_client([])
+    assert make_assistant(app.state, llm, Settings(email_provider="gmail")).services.sends_email
+    assert not make_assistant(app.state, llm, Settings(email_provider="none")).services.sends_email
+
+
+def test_a_company_size_the_visitor_never_gave_is_not_saved(make_client):
+    """Seen live: the model asked "How many employees?" and answered "about 50" itself."""
+    client, app, llm = make_client([
+        [ToolCall("a", "update_lead", {"need": "security", "company_size": "about 50 employees"})],
+        ["How many people work at your company?"],
+        [ToolCall("b", "update_lead", {"company_size": "120"})],
+        ["Thanks."],
+    ], now=NOW)
+    cid, headers, _ = start(client)
+    say(client, cid, headers, "security", "m-000001")
+    lead = app.state.repo.leads[cid]
+    assert lead.need == "security" and not lead.company_size
+    assert "Company size NOT saved" in llm.calls[1]["messages"][-1].text
+    say(client, cid, headers, "We're 120 people", "m-000002")
+    assert app.state.repo.leads[cid].company_size

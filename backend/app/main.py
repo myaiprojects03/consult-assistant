@@ -77,7 +77,8 @@ class MissingLLM(LLMProvider):
 
 def make_assistant(state: Any, llm: LLMProvider, s: Settings | None = None) -> Assistant:
     s = s or get_settings()
-    services = Services(state.booking, state.jobs, state.team, state.clients, state.verifier, state.tickets)
+    services = Services(state.booking, state.jobs, state.team, state.clients, state.verifier, state.tickets,
+                        sends_email=s.email_provider != "none")
     return Assistant(state.repo, llm, state.embedder, state.rules, services,
                      max_tokens=s.llm_max_output_tokens, history_messages=s.chat_history_messages,
                      max_tool_rounds=s.chat_max_tool_rounds, voice_max_tokens=s.voice_max_output_tokens)

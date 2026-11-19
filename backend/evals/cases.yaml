@@ -26,6 +26,10 @@
   no_promise: true
   any: [agreement, proposal, consultant, discovery call]
 
+- name: does not answer its own qualifying question
+  say: ["I'd like to book a discovery call", "test@example.com", "Test", "security"]
+  none: [We have about, We have around, we are about, employees.]
+
 - name: unknown fact is not invented
   say: ["Do you have an office in Tokyo?"]
   any: [UK, Europe, North America, don't, not]

@@ -153,6 +153,20 @@ def size_from_text(text: str) -> str | None:
     return None
 
 
+def _numbers(text: str) -> set[str]:
+    return {n.replace(",", "") for n in re.findall(r"\d[\d,]*", text)}
+
+
+async def stated_by_visitor(ctx: ToolContext, value: str) -> bool:
+    """A number the model saves (company size) must be one the visitor wrote or said. Seen live: the model
+    asked for the size, then answered its own question with a made-up one."""
+    wanted = _numbers(value)
+    if not wanted:          # a broad answer ("a small team") has nothing to check
+        return True
+    said = await ctx.repo.recent_messages(ctx.conversation_id, 60)
+    return wanted <= _numbers(" ".join(m.text for m in said if m.role == "user"))
+
+
 def assess(lead: Lead, rules: Rules) -> Lead:
     lead.missing = [f for f in rules.qualification_fields if not getattr(lead, f, "")]
     size = employees(lead.company_size) if lead.company_size else None
@@ -187,6 +201,7 @@ class ToolContext:
     transfer_possible: bool = False      # voice over the phone network (not browser calls)
     voice_rules: VoiceRules | None = None
     transfer: dict[str, str] | None = None   # set by transfer_call; the call session carries it out
+    sends_email: bool = True             # False: email and invitations are logged stand-ins (a demo)
 
 
 # ---------------------------------------------------------------- follow-up work (background jobs)
@@ -378,10 +393,13 @@ async def run_tool(ctx: ToolContext, name: str, args: dict[str, Any]) -> str:
         if name == "update_lead":
             lead: Lead = await ctx.repo.get_lead(ctx.conversation_id) or Lead(ctx.conversation_id)
             before = lead.status
-            changed = []
+            changed, refused = [], []
             for f in LEAD_FIELDS:
                 if f in args and _clean(args[f]):
                     value = _clean(args[f])
+                    if f == "company_size" and not await stated_by_visitor(ctx, value):
+                        refused.append(f)
+                        continue
                     if f == "email":
                         value = email_from_speech(value)
                         if not EMAIL_RE.match(value):
@@ -392,6 +410,9 @@ async def run_tool(ctx: ToolContext, name: str, args: dict[str, Any]) -> str:
             await ctx.repo.log_event(ctx.conversation_id, "lead_updated", {"fields": changed, "status": lead.status})
             await after_lead_saved(ctx, before, lead)
             note = ""
+            if refused:
+                note += (" Company size NOT saved: the visitor has not said how many people work there. Ask them and"
+                         " wait for their answer; never assume it or answer for them.")
             if lead.status == "not_a_fit":
                 note = f" Note: {ctx.rules.fit.get('note', '')} Be polite and still answer their questions."
             if ctx.channel == "voice" and "email" in changed:
@@ -456,9 +477,12 @@ async def run_tool(ctx: ToolContext, name: str, args: dict[str, Any]) -> str:
                 return await _calendar_down(ctx, start.isoformat())
             await ctx.repo.log_event(ctx.conversation_id, "call_booked", {"booking": b.reference, "created": created})
             text_too = " and a text message to their phone" if ctx.channel == "voice" and b.phone else ""
+            sent = (f"A confirmation email{text_too} and a calendar invitation are on their way to {b.email}."
+                    if ctx.sends_email else
+                    "This is a demonstration: no confirmation email or calendar invitation is sent, so say that "
+                    "and do not promise one.")
             return (f"Booked: {describe(b.start_at, b.end_at, tz)} with {ctx.team.get(b.consultant_id).name}, "
-                    f"reference {b.reference}. A confirmation email{text_too} and a calendar invitation are on their "
-                    f"way to {b.email}. Tell the visitor these details.")
+                    f"reference {b.reference}. {sent} Tell the visitor these details.")
 
         if name == "reschedule_discovery_call":
             target = await _find_booking(ctx, args)
@@ -475,8 +499,10 @@ async def run_tool(ctx: ToolContext, name: str, args: dict[str, Any]) -> str:
             except CalendarUnavailable:
                 return await _calendar_down(ctx, f"move {target.reference} to {start.isoformat()}")
             await ctx.repo.log_event(ctx.conversation_id, "call_moved", {"booking": target.reference})
+            sent = (f"An updated invitation and email are on their way to {moved.email}." if ctx.sends_email else
+                    "This is a demonstration: no updated email or invitation is sent.")
             return (f"Moved: the call ({moved.reference}) is now {describe(moved.start_at, moved.end_at, tz)}. "
-                    f"An updated invitation and email are on their way to {moved.email}.")
+                    f"{sent}")
 
         if name == "cancel_discovery_call":
             target = await _find_booking(ctx, args)
@@ -487,8 +513,10 @@ async def run_tool(ctx: ToolContext, name: str, args: dict[str, Any]) -> str:
                                      {"booking": target.reference, "reason": _clean(args.get("reason", ""))})
             tz = _visitor_tz(ctx, args, target)
             when = describe(target.start_at, target.end_at, tz)
-            return (f"Cancelled the call on {when} ({target.reference}). A confirmation "
-                    f"email is on its way to {target.email}. Offer to book a new time if they want one.")
+            sent = (f"A confirmation email is on its way to {target.email}." if ctx.sends_email else
+                    "This is a demonstration: no confirmation email is sent.")
+            return (f"Cancelled the call on {when} ({target.reference}). {sent} "
+                    "Offer to book a new time if they want one.")
 
         if name == "verify_client":
             if ctx.client_id:

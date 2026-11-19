@@ -83,6 +83,7 @@ class Services:
     clients: ClientStore | None = None
     verifier: Verifier | None = None
     tickets: TicketService | None = None
+    sends_email: bool = True     # False while email is a logged stand-in (EMAIL_PROVIDER=none), e.g. a demo
 
 
 @dataclass
@@ -121,7 +122,7 @@ class Assistant:
                                conv.client_id, conv.verified_email, channel=conv.channel,
                                caller_number=(call_info or {}).get("caller_number", ""),
                                transfer_possible=bool((call_info or {}).get("transfer_possible")),
-                               voice_rules=self.voice_rules)
+                               voice_rules=self.voice_rules, sends_email=svc.sends_email)
         client = await svc.clients.get_client(conv.client_id) if conv.client_id and svc.clients else None
         client_text = ""
         if client:
