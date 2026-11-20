@@ -1,9 +1,23 @@
 # Consult Assistant
 
-An AI assistant for an IT consulting firm, built on Claude. It answers prospects and clients on the website
-and by phone, books discovery calls, handles client support, and helps consultants find internal
-knowledge. Staff run it from an admin dashboard. The sample firm is "Acme IT Consulting", and the
+[![CI](https://github.com/myaiprojects03/consult-assistant/actions/workflows/ci.yml/badge.svg)](https://github.com/myaiprojects03/consult-assistant/actions/workflows/ci.yml)
+
+An AI assistant for an IT consulting firm, built with Claude Code and designed for Claude. It answers prospects
+and clients on the website and by phone, books discovery calls, handles client support, and helps consultants
+find internal knowledge. Staff run it from an admin dashboard. The firm, "Acme IT Consulting", is fictional; the
 assistant is "Ava".
+
+## Try it live
+
+| What | Link |
+|---|---|
+| Website with the chat (bottom-right button) | https://consult-assistant.vercel.app |
+| Voice call in the browser (Chrome or Edge) | https://consult-assistant.vercel.app/voice |
+| Admin dashboard | https://consult-assistant.vercel.app/admin |
+| Team assistant | https://consult-assistant.vercel.app/team |
+
+The dashboard and the team assistant need a staff login, available on request. The live site runs on free
+plans with Groq's free model; email, calendar, CRM and Slack are connected in a local setup ([docs/SETUP.md](docs/SETUP.md)).
 
 ## What it does
 
@@ -38,7 +52,7 @@ assistant is "Ava".
 | Backend | Python 3.12, FastAPI, asyncpg, Postgres 16 with pgvector, Redis |
 | AI | Claude (`claude-haiku-5-5` for chat and voice, `claude-sonnet-5-5` for drafts), or any OpenAI-compatible API |
 | Frontend | Next.js 15, React 19, Tailwind |
-| Hosting | Vercel (website and API), Neon, Redis Cloud, Upstash QStash (free plans for a pilot) |
+| Hosting | Vercel (website and API), Neon Postgres, Upstash Redis and QStash (free plans for a pilot) |
 
 ## Quick start
 

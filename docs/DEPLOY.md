@@ -9,7 +9,7 @@ you rely on them.
 | Website, widget, `/team`, `/voice`, `/admin` | Vercel project `consult-assistant` | Hobby (personal, non-commercial use only) | nothing (pages only) |
 | API (chat, calls, jobs) | Vercel project `consult-assistant-api`, Frankfurt | Hobby: FastAPI as one function, 2 GB memory, 5 minutes per request or call | nothing (all state is in the database) |
 | Database | Neon, Frankfurt | 1 GB per project, 100 compute hours a month, sleeps after 5 idle minutes | everything |
-| Rate limits, verification codes | Redis Cloud, Frankfurt | Free: 30 MB | short-lived keys only |
+| Rate limits, verification codes | Upstash Redis, Frankfurt | Free: 256 MB, 500,000 commands a month | short-lived keys only |
 | Background tasks | Upstash QStash | 1,000 messages a day | task ids only |
 
 Nothing here needs a payment card. Keep every key out of the repository: each one goes only into the
@@ -29,9 +29,11 @@ the API; `render.yaml` and `backend/Dockerfile` remain for a host with a card, s
    and `btree_gist` extensions.
 
 ## 3. Redis and QStash (5 minutes)
-1. **Redis:** sign up at redis.io/try-free. Create the free database on **AWS, eu-central-1 (Frankfurt)**.
-   Under **Connect**, copy the connection URL (`redis://default:<password>@<host>:<port>`).
-2. **QStash:** sign up at upstash.com and open **QStash**. Use the EU region (the default; the API uses
+1. **Redis:** sign up at upstash.com and create a Redis database in **eu-central-1 (Frankfurt)**. Under
+   **Connect**, copy the URL that starts with `rediss://` (two "s": Upstash accepts only encrypted connections).
+   The free plan allows one database; it can be shared with another project, because every key this app writes
+   has its own prefix. Redis Cloud's free plan (redis.io/try-free) works too.
+2. **QStash:** in the same Upstash account, open **QStash**. Use the EU region (the default; the API uses
    `https://qstash.upstash.io`) and copy `QSTASH_TOKEN`, `QSTASH_CURRENT_SIGNING_KEY` and
    `QSTASH_NEXT_SIGNING_KEY`.
 
@@ -51,7 +53,7 @@ the API; `render.yaml` and `backend/Dockerfile` remain for a host with a card, s
    | `PUBLIC_API_URL` | `https://consult-assistant-api.vercel.app` (the project's address) |
    | `ALLOWED_ORIGINS` | the website's address from step 5, e.g. `https://consult-assistant.vercel.app` |
    | `DATABASE_URL` | Neon connection string |
-   | `REDIS_URL` | Redis Cloud connection URL |
+   | `REDIS_URL` | Upstash Redis URL (`rediss://...`) |
    | `QSTASH_TOKEN`, `QSTASH_CURRENT_SIGNING_KEY`, `QSTASH_NEXT_SIGNING_KEY` | from Upstash |
    | `LLM_PROVIDER` | `groq` (while testing) or `anthropic` |
    | `GROQ_API_KEY` or `ANTHROPIC_API_KEY` | the key for that provider |
@@ -130,7 +132,7 @@ Work through this before real customers use the assistant.
 ## Security
 - [ ] Every staff member has their own account (`scripts.staff`). No shared logins. Admin only for the people
   who need the dashboard.
-- [ ] Two-factor sign-in on every service account: GitHub, Vercel, Neon, Redis Cloud, Upstash, Anthropic, Twilio,
+- [ ] Two-factor sign-in on every service account: GitHub, Vercel, Neon, Upstash, Anthropic, Twilio,
   Google, HubSpot, Slack, Jira.
 - [ ] `APP_ENV=production`. It turns off the API docs page, hides error details and
   health details, and refuses to start without the database and Redis.
@@ -165,7 +167,7 @@ month.
 | Item | Cost a month |
 |---|---|
 | Vercel Pro (one developer seat, website and API) | $20 |
-| Neon, Redis Cloud, Upstash | $0 on the free plans at this volume |
+| Neon, Upstash (Redis and QStash) | $0 on the free plans at this volume |
 | Claude Haiku 5.5 for chat and calls ($0.10 / $0.50 per million input / output tokens; about 6,000 in and 250 out per turn) | about $5 |
 | Claude Sonnet 5.5 for team drafts ($2 / $10 per million tokens; about 8,000 in and 1,500 out per draft) | about $10 |
 | Twilio ConversationRelay ($0.07 a minute) | about $14, plus call minutes and the phone number at Twilio's rates for the country |
