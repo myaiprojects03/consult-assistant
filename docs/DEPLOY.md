@@ -138,7 +138,9 @@ Work through this before real customers use the assistant.
 - [ ] Keys made for testing are rotated, and none were ever committed (`git log -p | grep -i key` finds nothing).
 
 ## Privacy (GDPR)
-- [ ] Replace the sample privacy notice (`frontend/src/app/privacy/page.tsx`) with the firm's reviewed policy,
+- [ ] On the firm's own website, use only the widget (`embed.js`); the showcase site in `frontend/src/app/page.tsx`
+  says Acme is a fictional firm.
+- [ ] Replace the starting privacy notice (`frontend/src/app/privacy/page.tsx`) with the firm's reviewed policy,
   and set the retention periods in the dashboard (Content and rules > Assistant rules, `privacy:`) to match it.
 - [ ] Data processing agreements in place with each processor that receives personal data: Anthropic,
   Vercel, Neon, Redis, Upstash, Twilio, Google, HubSpot, Slack, Atlassian.

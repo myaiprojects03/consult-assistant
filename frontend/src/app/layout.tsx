@@ -4,7 +4,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Acme IT Consulting",
-  description: "Demo website with the AI assistant chat widget.",
+  description: "Acme IT Consulting, with Ava, the AI assistant.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

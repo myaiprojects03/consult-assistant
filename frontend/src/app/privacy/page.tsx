@@ -1,11 +1,11 @@
 import { brand } from "@/config/brand";
 
-// Sample privacy notice for the chat. The firm replaces it with its reviewed policy.
+// Starting privacy notice for the chat and calls. Before go-live the firm replaces it with its reviewed policy
+// (docs/DEPLOY.md, go-live checklist).
 export default function Privacy() {
   return (
     <main className="mx-auto max-w-2xl px-6 py-14 leading-relaxed" style={{ color: brand.colors.ink }}>
       <h1 className="text-3xl font-bold">How the chat uses your information</h1>
-      <p className="mt-2 text-sm" style={{ color: brand.colors.muted }}>Sample notice. Replace with your reviewed policy.</p>
       <div className="mt-8 space-y-4">
         <p>The assistant on this website stores your messages and any details you share (such as your name, email,
           company and what you need) so it can answer you, and so a consultant can follow up or arrange a call.</p>

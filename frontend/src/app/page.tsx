@@ -19,7 +19,7 @@ export default function DemoSite() {
   return (
     <div style={{ color: c.ink }}>
       <aside aria-label="About this site" className="px-4 py-2 text-center text-xs" style={{ background: c.soft, color: c.muted }}>
-        Demo website for a sample firm. The chat in the corner is the real assistant.
+        {brand.firmName} is a fictional firm. The assistant in the corner is real: ask it anything or book a call.
       </aside>
       <header className="mx-auto flex max-w-5xl items-center justify-between px-6 py-6">
         <span className="text-lg font-bold tracking-tight">{brand.firmName}</span>
@@ -69,7 +69,7 @@ export default function DemoSite() {
       </main>
 
       <footer className="mx-auto max-w-5xl px-6 py-10 text-xs" style={{ color: c.muted }}>
-        © {new Date().getFullYear()} {brand.firmName} (sample) · <a className="underline" href={brand.privacyUrl}>Privacy</a>
+        © {new Date().getFullYear()} {brand.firmName} ·<a className="underline" href={brand.privacyUrl}>Privacy</a>
       </footer>
 
       {/* The one line the firm adds to its website: */}
