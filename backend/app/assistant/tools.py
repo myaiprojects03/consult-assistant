@@ -167,6 +167,27 @@ async def stated_by_visitor(ctx: ToolContext, value: str) -> bool:
     return wanted <= _numbers(" ".join(m.text for m in said if m.role == "user"))
 
 
+def _squash(text: str) -> str:
+    """Visitor words as one string, with spoken email parts turned back into symbols ("alex at gmail dot
+    com" -> "alex@gmail.com"), so typed and spoken addresses can be checked the same way."""
+    t = re.sub(r"\s+at\s+", "@", f" {text.lower()} ")
+    t = re.sub(r"\s+dot\s+", ".", t)
+    return re.sub(r"[^a-z0-9@.]", "", t)
+
+
+async def email_given_by_visitor(ctx: ToolContext, email: str) -> bool:
+    """The model may only save an email the visitor gave. Seen on a live call: the caller said only their
+    name, and the model read back "alex at example dot com". Both the name part and the domain must
+    appear in what the visitor wrote or said (speech recognition may garble the rest)."""
+    if "@" not in (spoken := _squash(email)):
+        return True                     # not an address at all: the format check below refuses it
+    local, _, domain = spoken.partition("@")
+    name, label = re.sub(r"[^a-z0-9]", "", local), re.sub(r"[^a-z0-9]", "", domain.split(".")[0])
+    said = await ctx.repo.recent_messages(ctx.conversation_id, 60)
+    heard = _squash(" ".join(m.text for m in said if m.role == "user"))
+    return bool(name and label) and name in heard and label in heard
+
+
 def assess(lead: Lead, rules: Rules) -> Lead:
     lead.missing = [f for f in rules.qualification_fields if not getattr(lead, f, "")]
     size = employees(lead.company_size) if lead.company_size else None
@@ -400,6 +421,9 @@ async def run_tool(ctx: ToolContext, name: str, args: dict[str, Any]) -> str:
                     if f == "company_size" and not await stated_by_visitor(ctx, value):
                         refused.append(f)
                         continue
+                    if f == "email" and not await email_given_by_visitor(ctx, value):
+                        refused.append(f)
+                        continue
                     if f == "email":
                         value = email_from_speech(value)
                         if not EMAIL_RE.match(value):
@@ -410,9 +434,12 @@ async def run_tool(ctx: ToolContext, name: str, args: dict[str, Any]) -> str:
             await ctx.repo.log_event(ctx.conversation_id, "lead_updated", {"fields": changed, "status": lead.status})
             await after_lead_saved(ctx, before, lead)
             note = ""
-            if refused:
+            if "company_size" in refused:
                 note += (" Company size NOT saved: the visitor has not said how many people work there. Ask them and"
                          " wait for their answer; never assume it or answer for them.")
+            if "email" in refused:
+                note += (" Email NOT saved: the visitor has not given that address. Ask for their email and wait;"
+                         " never guess or make one up, and do not read one back.")
             if lead.status == "not_a_fit":
                 note = f" Note: {ctx.rules.fit.get('note', '')} Be polite and still answer their questions."
             if ctx.channel == "voice" and "email" in changed:

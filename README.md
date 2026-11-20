@@ -68,7 +68,7 @@ Open http://localhost:3000 and click **Chat with us**. Sample clients, staff acc
 ## Tests
 
 ```bash
-cd backend && pytest                  # 181 tests; set TEST_DATABASE_URL to include Postgres
+cd backend && pytest                  # 187 tests; set TEST_DATABASE_URL to include Postgres
 ruff check . && mypy app evals scripts
 python -m evals.run                   # 27 behaviour checks against the real model
 cd ../frontend && npm run test:e2e    # browser tests (see the comment in playwright.config.ts)

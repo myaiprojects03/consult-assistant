@@ -411,7 +411,7 @@ def test_booking_with_a_phone_number_sends_text_messages(make_client):
     ], now=NOW)
     cid, headers, _ = start(client)
     from tests.test_chat_api import say
-    say(client, cid, headers, "Book me in", "msg-00001")
+    say(client, cid, headers, "Book me in: Jo Smith, jo@example.com, 40 people, Azure", "msg-00001")
     slot = next(line.split("start=")[1].split()[0] for m in llm.calls[-1]["messages"] if m.role == "tool"
                 for line in m.text.splitlines() if "start=" in line)
     llm.rounds += [[ToolCall("c", "book_discovery_call", {"start": slot})], ["Booked."]]

@@ -433,3 +433,20 @@ def test_a_company_size_the_visitor_never_gave_is_not_saved(make_client):
     assert "Company size NOT saved" in llm.calls[1]["messages"][-1].text
     say(client, cid, headers, "We're 120 people", "m-000002")
     assert app.state.repo.leads[cid].company_size
+
+
+def test_an_email_the_visitor_never_gave_is_not_saved(make_client):
+    """Seen on a live call: the caller gave only a name, and the model read back alex@example.com."""
+    client, app, llm = make_client([
+        [ToolCall("a", "update_lead", {"name": "Alex", "email": "alex@example.com"})],
+        ["What's the best email for the invitation?"],
+        [ToolCall("b", "update_lead", {"email": "alex@gmail.com"})],
+        ["Let me read that back."],
+    ], now=NOW)
+    cid, headers, _ = start(client)
+    say(client, cid, headers, "sure my name is Alex", "m-000001")
+    lead = app.state.repo.leads[cid]
+    assert lead.name == "Alex" and not lead.email
+    assert "Email NOT saved" in llm.calls[1]["messages"][-1].text
+    say(client, cid, headers, "it's alex at gmail dot com", "m-000002")      # spoken, as speech recognition writes it
+    assert app.state.repo.leads[cid].email == "alex@gmail.com"

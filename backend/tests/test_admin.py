@@ -167,7 +167,8 @@ def test_dashboard_figures_lists_and_transcript(pg_env, make_client):
         ["A consultant will be in touch."],
     ])
     cid, headers, _ = start(client)
-    say(client, cid, headers, "Hi, I'm Jo from a 40 person firm, we need an Azure migration", "msg-00001")
+    say(client, cid, headers, "Hi, I'm Jo (jo@example.com) from a 40 person firm, we need an Azure migration",
+        "msg-00001")
     say(client, cid, headers, "Can you do it 20% cheaper?", "msg-00002")
     admin = staff(client, app, "boss@acme.example", "admin")
     o = client.get("/api/admin/overview?days=7", headers=admin)
